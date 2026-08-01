@@ -1,0 +1,252 @@
+
+==============================================================================
+  STAGE 0 — SYNTHETIC SOURCE DATA
+==============================================================================
+Generated: CRM=10  WEB=10  LEGACY=4 records
+26/08/01 13:01:37 WARN Utils: Your hostname, vm resolves to a loopback address: 127.0.0.1; using 192.0.2.2 instead (on interface eth0)
+26/08/01 13:01:37 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/08/01 13:01:38 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+
+==============================================================================
+  STAGE 1 — BRONZE INGESTION (metadata-driven)
+==============================================================================
+[AUDIT] bronze_ingest          source=WEB      {'rows_ingested': 10}
+[AUDIT] bronze_ingest          source=LEGACY   {'rows_ingested': 4}
+==============================================================================
+  STAGE 2 — SILVER STANDARDIZATION (config-driven)
+==============================================================================
+
+Sample raw -> standardized:
++---------+----------------+-----------------+------------------------+----------+---------+-------------+
+|source_id|source_record_id|full_name        |email                   |phone     |city     |date_of_birth|
++---------+----------------+-----------------+------------------------+----------+---------+-------------+
+|WEB      |U9998           |NULL             |ghost@web.com           |NULL      |NULL     |NULL         |
+|LEGACY   |L00002          |Amit Kumar Verma |amit.verma@outlook.com  |9900112233|Noida    |1985-06-30   |
+|CRM      |C003            |Amit Kumar Verma |amit.verma@outlook.com  |9900112233|Noida    |1985-06-30   |
+|WEB      |U0003           |Amit Kumar Verma |amit.verma@outlook.com  |9900112233|Noida    |1985-06-30   |
+|LEGACY   |L00004          |Ananya Das       |ananya.das@gmail.com    |9543210987|Kolkata  |1995-03-08   |
+|CRM      |C006            |Ananya Das       |ananya.das@gmail.com    |9543210987|Kolkata  |2031-03-08   |
+|CRM      |C008            |Divya Reddy      |divya.reddy@gmail.com   |9321098765|Hyderabad|1993-07-04   |
+|WEB      |U0006           |Divya Reddy      |divya.r@hotmail.com     |9000000001|Hyderabad|1993-07-04   |
+|CRM      |C007            |Karan Mehta      |karan.mehta@gmail.com   |9432109876|Gurugram |1991-12-19   |
+|CRM      |C007            |Karan Mehta      |karan.mehta@gmail.com   |9432109876|Gurugram |1991-12-19   |
+|WEB      |U0005           |Karan Mehta      |karan.mehta@gmail.com   |9432109876|Gurugram |1991-12-19   |
+|WEB      |U9999           |Meera Joshi      |meera.j@gmail.com       |9222333444|Pune     |1994-02-14   |
+|WEB      |U9997           |No Contact Person|NULL                    |NULL      |Delhi    |1990-01-01   |
+|CRM      |C002            |Priya Nair       |priya.nair@yahoo.com    |9812345678|Bengaluru|1988-11-02   |
+|WEB      |U0002           |Priya Nair       |priya.nair@yahoo.com    |9812345678|Bengaluru|1988-11-02   |
+|LEGACY   |L00001          |Rahul Sharma     |rahul.sharma@gmail.com  |9876543210|Gurugram |1990-04-12   |
+|CRM      |C001            |Rahul Sharma     |rahul.sharma@gmail.com  |9876543210|Gurugram |1990-04-12   |
+|WEB      |U0001           |Rahul Sharma     |rahul.sharma@gmail.com  |9876543210|Gurugram |1990-04-12   |
+|CRM      |C009            |Rohit Sharma     |rohit.sharma88@gmail.com|9888777666|Gurugram |1988-05-10   |
+|WEB      |U9995           |Rohit Sharma     |rohit.s.trader@gmail.com|9777666555|Gurugram |1996-09-22   |
+|LEGACY   |L00003          |Sneha Iyer       |NULL                    |9765432109|Mumbai   |1992-01-25   |
+|CRM      |C004            |Sneha Iyer       |NULL                    |9765432109|Mumbai   |1992-01-25   |
+|WEB      |U0004           |Vicky Singh      |vikram.s@gmail.com      |9111222333|Delhi    |1979-09-15   |
+|CRM      |C005            |Vikram Singh     |vikram.s@gmail.com      |9654321098|Delhi    |1979-09-15   |
++---------+----------------+-----------------+------------------------+----------+---------+-------------+
+
+
+==============================================================================
+  STAGE 3 — DATA QUALITY VALIDATION
+==============================================================================
+[AUDIT] dq_validation          source=ALL      {'rows_in': 24, 'rows_valid': 19, 'rows_quarantined': 5, 'rule_failures': 5}
+
+Quarantined records and why:
++---------+----------------+-------+---------------------------------------------------------------------+
+|source_id|source_record_id|rule_id|description                                                          |
++---------+----------------+-------+---------------------------------------------------------------------+
+|WEB      |U9998           |DQ001  |Full name is mandatory                                               |
+|WEB      |U9997           |DQ002  |At least one contact identifier (email or phone) must exist          |
+|CRM      |C006            |DQ006  |Date of birth must be a valid past date (business rule)              |
+|CRM      |C007            |DQ007  |source_record_id must be unique within a source batch (duplicate key)|
++---------+----------------+-------+---------------------------------------------------------------------+
+
+
+==============================================================================
+  STAGE 4 — IDENTITY RESOLUTION
+==============================================================================
+
+Match decisions (non NO_MATCH):
++-------------------------+-------------------------+------+-------------+-----------------+
+|             record_uid_1|             record_uid_2| score|       method|         decision|
++-------------------------+-------------------------+------+-------------+-----------------+
+|c66292edffd3446d1ecb5f...|edf9ca99e80308305d89ea...|   1.0|deterministic|            MATCH|
+|44c6adbc982b1f8f0b0bf8...|72a37b16da9feb3e50d1fc...|   1.0|deterministic|            MATCH|
+|d5de84db5d63f7e0d40fc4...|edf9ca99e80308305d89ea...|   1.0|deterministic|            MATCH|
+|5ea4fe585b0c03c52c5d2e...|72a37b16da9feb3e50d1fc...|   1.0|deterministic|            MATCH|
+|c66292edffd3446d1ecb5f...|d5de84db5d63f7e0d40fc4...|   1.0|deterministic|            MATCH|
+|44c6adbc982b1f8f0b0bf8...|5ea4fe585b0c03c52c5d2e...|   1.0|deterministic|            MATCH|
+|54c36d10f2f79218ceb307...|8696df57410a31ee563a0b...|   1.0|deterministic|            MATCH|
+|238d3ff398a61b3cfd1f32...|bf3ec8262da8ec7c7905e3...|   1.0|deterministic|            MATCH|
+|5e64741443c1f52b517e8d...|f0fabc3082faa9029e4e8e...|   1.0|deterministic|            MATCH|
+|62228e429d57d39e0048d7...|7b280673838de82b21cf81...|  0.75|probabilistic|           REVIEW|
+|2f55a51e95f11279828c4b...|5c36f60ecb75a112bb4fa9...|0.5667|probabilistic|REJECTED_FP_GUARD|
++-------------------------+-------------------------+------+-------------+-----------------+
+
+
+==============================================================================
+  STAGE 5 — GOLDEN RECORDS (attribute-level survivorship)
+==============================================================================
+
+Golden customer records:
++--------------+----------------+------------------------+----------+---------+---------+-------------+
+|golden_id     |full_name       |email                   |phone     |city     |state    |date_of_birth|
++--------------+----------------+------------------------+----------+---------+---------+-------------+
+|E-72a37b16da9f|Amit Kumar Verma|amit.verma@outlook.com  |9900112233|Noida    |UP       |1985-06-30   |
+|E-1c68dd92561b|Ananya Das      |ananya.das@gmail.com    |9543210987|Kolkata  |WB       |1995-03-08   |
+|E-62228e429d57|Divya Reddy     |divya.r@hotmail.com     |9000000001|Hyderabad|TELANGANA|1993-07-04   |
+|E-7b280673838d|Divya Reddy     |divya.reddy@gmail.com   |9321098765|Hyderabad|TELANGANA|1993-07-04   |
+|E-cc08b7a44ded|Karan Mehta     |karan.mehta@gmail.com   |9432109876|Gurugram |HR       |1991-12-19   |
+|E-e92509c26881|Meera Joshi     |meera.j@gmail.com       |9222333444|Pune     |MH       |1994-02-14   |
+|E-bf3ec8262da8|Priya Nair      |priya.nair@yahoo.com    |9812345678|Bengaluru|KA       |1988-11-02   |
+|E-edf9ca99e803|Rahul Sharma    |rahul.sharma@gmail.com  |9876543210|Gurugram |HR       |1990-04-12   |
+|E-2f55a51e95f1|Rohit Sharma    |rohit.s.trader@gmail.com|9777666555|Gurugram |HR       |1996-09-22   |
+|E-5c36f60ecb75|Rohit Sharma    |rohit.sharma88@gmail.com|9888777666|Gurugram |HR       |1988-05-10   |
+|E-8696df57410a|Sneha Iyer      |NULL                    |9765432109|Mumbai   |MH       |1992-01-25   |
+|E-f0fabc3082fa|Vikram Singh    |vikram.s@gmail.com      |9111222333|Delhi    |DL       |1979-09-15   |
++--------------+----------------+------------------------+----------+---------+---------+-------------+
+
+
+==============================================================================
+  STAGE 6 — RECONCILIATION
+==============================================================================
+[AUDIT] reconciliation         source=ALL      {'exceptions': 0}
+{
+  "batch_id": "20260801130141-7c62ef",
+  "stage_counts_by_source": {
+    "bronze_ingested": {
+      "WEB": 10,
+      "CRM": 10,
+      "LEGACY": 4
+    },
+    "standardized": {
+      "WEB": 10,
+      "CRM": 10,
+      "LEGACY": 4
+    },
+    "dq_valid": {
+      "WEB": 8,
+      "CRM": 7,
+      "LEGACY": 4
+    },
+    "dq_quarantined": {
+      "WEB": 2,
+      "CRM": 3
+    },
+    "linked_to_golden": {
+      "WEB": 8,
+      "CRM": 7,
+      "LEGACY": 4
+    }
+  },
+  "totals": {
+    "bronze": 24,
+    "standardized": 24,
+    "valid": 19,
+    "quarantined": 5,
+    "golden_records": 12,
+    "dedup_consolidation": 7
+  },
+  "exceptions": [
+    "none \u2014 all stage transitions fully reconciled"
+  ]
+}
+
+==============================================================================
+  STAGE 7 — LINEAGE: trace one Golden Record end-to-end
+==============================================================================
+{
+  "golden_id": "E-72a37b16da9f",
+  "source_records": [
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "source_id": "CRM",
+      "source_record_id": "C003",
+      "raw_payload": "{\"cust_id\":\"C003\",\"full_name\":\"Amit Kumar Verma\",\"email_addr\":\"amit.verma@outlook.com\",\"phone\":\"+91-99001-12233\",\"addr_line\":\"88 Sec 21\",\"city\":\"Noida\",\"state\":\"Uttar Pradesh\",\"country\":\"India\",\"dob\":\"1985-06-30\",\"updated_at\":\"2026-06-01\"}"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "source_id": "WEB",
+      "source_record_id": "U0003",
+      "raw_payload": "{\"birth_date\":\"30/06/1985\",\"city_name\":\"Noida\",\"contact_email\":\"AMIT.VERMA@OUTLOOK.COM\",\"country_code\":\"IN\",\"mobile\":\"9900112233\",\"modified_ts\":\"2026-07-10\",\"name\":\" amit kumar verma  \",\"region\":\"Uttar Pradesh\",\"street\":\"88 Sec 21\",\"user_id\":\"U0003\"}"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "source_id": "LEGACY",
+      "source_record_id": "L00002",
+      "raw_payload": "{\"CUST_NO\":\"L00002\",\"CUST_NAME\":\"AMIT KUMAR VERMA\",\"EMAIL\":\"amit.verma@outlook.com\",\"TEL\":\"09900112233\",\"ADDR\":\"88 SEC 21\",\"CITY\":\"NOIDA\",\"ST\":\"UTTAR PRADESH\",\"CTRY\":\"IND\",\"BIRTH_DT\":\"19850630\",\"LAST_UPD\":\"2024-01-20\"}"
+    }
+  ],
+  "transforms": [
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "phone",
+      "raw_value": "+91-99001-12233",
+      "standardized_value": "9900112233",
+      "transforms_applied": "digits_only|normalize_phone"
+    },
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "address_line",
+      "raw_value": "88 Sec 21",
+      "standardized_value": "88 Sector 21",
+      "transforms_applied": "trim|collapse_whitespace|title_case|expand_abbreviations"
+    },
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "state",
+      "raw_value": "Uttar Pradesh",
+      "standardized_value": "UP",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "country",
+      "raw_value": "India",
+      "standardized_value": "IN",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "full_name",
+      "raw_value": " amit kumar verma  ",
+      "standardized_value": "Amit Kumar Verma",
+      "transforms_applied": "trim|collapse_whitespace|title_case|strip_titles"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "email",
+      "raw_value": "AMIT.VERMA@OUTLOOK.COM",
+      "standardized_value": "amit.verma@outlook.com",
+      "transforms_applied": "trim|lower_case|null_if_invalid_email"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "address_line",
+      "raw_value": "88 Sec 21",
+      "standardized_value": "88 Sector 21",
+      "transforms_applied": "trim|collapse_whitespace|title_case|expand_abbreviations"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "state",
+      "raw_value": "Uttar Pradesh",
+      "standardized_value": "UP",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "date_of_birth",
+      "raw_value": "30/06/1985",
+      "standardized_value": "1985-06-30",
+      "transforms_applied": "parse_date"
+    },
+    {
+      "record_uid": "5ea4fe585b
+
+==============================================================================
+  DONE — outputs in ./output, tables in ./warehouse
+==============================================================================

@@ -1,0 +1,11 @@
+cust_id,full_name,email_addr,phone,addr_line,city,state,country,dob,updated_at
+C001,Rahul Sharma,rahul.sharma@gmail.com,+91-98765-43210,12 MG Rd,Gurgaon,Haryana,India,1990-04-12,2026-06-01
+C002,Priya Nair,priya.nair@yahoo.com,+91-98123-45678,4 Palm St,Bangalore,Karnataka,India,1988-11-02,2026-06-01
+C003,Amit Kumar Verma,amit.verma@outlook.com,+91-99001-12233,88 Sec 21,Noida,Uttar Pradesh,India,1985-06-30,2026-06-01
+C004,Sneha Iyer,sneha.iyer[at]gmail.com,+91-97654-32109,7 Lake Rd,Bombay,Maharashtra,India,1992-01-25,2026-06-01
+C005,Vikram Singh,vikram.s@gmail.com,+91-96543-21098,3 Park Ave,Delhi,Delhi,India,1979-09-15,2026-06-01
+C006,Ananya Das,ananya.das@gmail.com,+91-95432-10987,21 Hill Rd,Calcutta,West Bengal,India,2031-03-08,2026-06-01
+C007,Karan Mehta,karan.mehta@gmail.com,+91-94321-09876,55 Ring Rd,Gurgaon,Haryana,India,1991-12-19,2026-06-01
+C008,Divya Reddy,divya.reddy@gmail.com,+91-93210-98765,9 Rose Apt,Hyderabad,Telangana,India,1993-07-04,2026-06-01
+C009,Rohit Sharma,rohit.sharma88@gmail.com,+91-98887-77666,5 MG Rd,Gurgaon,Haryana,India,1988-05-10,2026-06-01
+C007,Karan Mehta,karan.mehta@gmail.com,+91-94321-09876,55 Ring Rd,Gurgaon,Haryana,India,1991-12-19,2026-06-15

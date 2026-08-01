@@ -1,0 +1,65 @@
+# Source system registry — metadata-driven ingestion.
+# Adding a new source = adding an entry here. No pipeline code changes.
+sources:
+  - source_id: CRM
+    description: Salesforce-style CRM customer extract
+    format: csv
+    path: data/landing/crm/*.csv
+    entity: customer
+    load_type: incremental          # incremental | full
+    watermark_column: updated_at
+    schema_evolution: merge          # merge | strict
+    trust_rank: 1                    # 1 = most trusted (used by survivorship)
+    field_map:                       # source column -> canonical attribute
+      cust_id: source_record_id
+      full_name: full_name
+      email_addr: email
+      phone: phone
+      addr_line: address_line
+      city: city
+      state: state
+      country: country
+      dob: date_of_birth
+      updated_at: source_updated_at
+
+  - source_id: WEB
+    description: Web signup platform, JSON event extract
+    format: json
+    path: data/landing/web/*.json
+    entity: customer
+    load_type: incremental
+    watermark_column: modified_ts
+    schema_evolution: merge
+    trust_rank: 2
+    field_map:
+      user_id: source_record_id
+      name: full_name
+      contact_email: email
+      mobile: phone
+      street: address_line
+      city_name: city
+      region: state
+      country_code: country
+      birth_date: date_of_birth
+      modified_ts: source_updated_at
+
+  - source_id: LEGACY
+    description: Legacy billing DB extract (pipe-delimited)
+    format: csv
+    options: { sep: "|" }
+    path: data/landing/legacy/*.dat
+    entity: customer
+    load_type: full
+    schema_evolution: strict
+    trust_rank: 3
+    field_map:
+      CUST_NO: source_record_id
+      CUST_NAME: full_name
+      EMAIL: email
+      TEL: phone
+      ADDR: address_line
+      CITY: city
+      ST: state
+      CTRY: country
+      BIRTH_DT: date_of_birth
+      LAST_UPD: source_updated_at

@@ -1,0 +1,211 @@
+{
+  "golden_id": "E-72a37b16da9f",
+  "source_records": [
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "source_id": "CRM",
+      "source_record_id": "C003",
+      "raw_payload": "{\"cust_id\":\"C003\",\"full_name\":\"Amit Kumar Verma\",\"email_addr\":\"amit.verma@outlook.com\",\"phone\":\"+91-99001-12233\",\"addr_line\":\"88 Sec 21\",\"city\":\"Noida\",\"state\":\"Uttar Pradesh\",\"country\":\"India\",\"dob\":\"1985-06-30\",\"updated_at\":\"2026-06-01\"}"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "source_id": "WEB",
+      "source_record_id": "U0003",
+      "raw_payload": "{\"birth_date\":\"30/06/1985\",\"city_name\":\"Noida\",\"contact_email\":\"AMIT.VERMA@OUTLOOK.COM\",\"country_code\":\"IN\",\"mobile\":\"9900112233\",\"modified_ts\":\"2026-07-10\",\"name\":\" amit kumar verma  \",\"region\":\"Uttar Pradesh\",\"street\":\"88 Sec 21\",\"user_id\":\"U0003\"}"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "source_id": "LEGACY",
+      "source_record_id": "L00002",
+      "raw_payload": "{\"CUST_NO\":\"L00002\",\"CUST_NAME\":\"AMIT KUMAR VERMA\",\"EMAIL\":\"amit.verma@outlook.com\",\"TEL\":\"09900112233\",\"ADDR\":\"88 SEC 21\",\"CITY\":\"NOIDA\",\"ST\":\"UTTAR PRADESH\",\"CTRY\":\"IND\",\"BIRTH_DT\":\"19850630\",\"LAST_UPD\":\"2024-01-20\"}"
+    }
+  ],
+  "transforms": [
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "phone",
+      "raw_value": "+91-99001-12233",
+      "standardized_value": "9900112233",
+      "transforms_applied": "digits_only|normalize_phone"
+    },
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "address_line",
+      "raw_value": "88 Sec 21",
+      "standardized_value": "88 Sector 21",
+      "transforms_applied": "trim|collapse_whitespace|title_case|expand_abbreviations"
+    },
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "state",
+      "raw_value": "Uttar Pradesh",
+      "standardized_value": "UP",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "attribute": "country",
+      "raw_value": "India",
+      "standardized_value": "IN",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "full_name",
+      "raw_value": " amit kumar verma  ",
+      "standardized_value": "Amit Kumar Verma",
+      "transforms_applied": "trim|collapse_whitespace|title_case|strip_titles"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "email",
+      "raw_value": "AMIT.VERMA@OUTLOOK.COM",
+      "standardized_value": "amit.verma@outlook.com",
+      "transforms_applied": "trim|lower_case|null_if_invalid_email"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "address_line",
+      "raw_value": "88 Sec 21",
+      "standardized_value": "88 Sector 21",
+      "transforms_applied": "trim|collapse_whitespace|title_case|expand_abbreviations"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "state",
+      "raw_value": "Uttar Pradesh",
+      "standardized_value": "UP",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "attribute": "date_of_birth",
+      "raw_value": "30/06/1985",
+      "standardized_value": "1985-06-30",
+      "transforms_applied": "parse_date"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "full_name",
+      "raw_value": "AMIT KUMAR VERMA",
+      "standardized_value": "Amit Kumar Verma",
+      "transforms_applied": "trim|collapse_whitespace|title_case|strip_titles"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "phone",
+      "raw_value": "09900112233",
+      "standardized_value": "9900112233",
+      "transforms_applied": "digits_only|normalize_phone"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "address_line",
+      "raw_value": "88 SEC 21",
+      "standardized_value": "88 Sector 21",
+      "transforms_applied": "trim|collapse_whitespace|title_case|expand_abbreviations"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "city",
+      "raw_value": "NOIDA",
+      "standardized_value": "Noida",
+      "transforms_applied": "trim|title_case|reference_lookup"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "state",
+      "raw_value": "UTTAR PRADESH",
+      "standardized_value": "UP",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "country",
+      "raw_value": "IND",
+      "standardized_value": "IN",
+      "transforms_applied": "trim|upper_case|reference_lookup"
+    },
+    {
+      "record_uid": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "attribute": "date_of_birth",
+      "raw_value": "19850630",
+      "standardized_value": "1985-06-30",
+      "transforms_applied": "parse_date"
+    }
+  ],
+  "dq_annotations": [],
+  "match_decisions": [
+    {
+      "record_uid_1": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "record_uid_2": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "score": 1.0,
+      "method": "deterministic",
+      "decision": "MATCH"
+    },
+    {
+      "record_uid_1": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "record_uid_2": "72a37b16da9feb3e50d1fcbd9101df9014cef53e773b58c76ffdb76edce72c7d",
+      "score": 1.0,
+      "method": "deterministic",
+      "decision": "MATCH"
+    },
+    {
+      "record_uid_1": "44c6adbc982b1f8f0b0bf8697fb584c4774a621863a90367151f5d4ff1b83111",
+      "record_uid_2": "5ea4fe585b0c03c52c5d2e21791dd20e31352149f5eb9b79c3cb82d242121630",
+      "score": 1.0,
+      "method": "deterministic",
+      "decision": "MATCH"
+    }
+  ],
+  "survivorship_decisions": [
+    {
+      "attribute": "address_line",
+      "golden_value": "88 Sector 21",
+      "winning_source": "WEB",
+      "strategy": "most_recent+source_precedence"
+    },
+    {
+      "attribute": "full_name",
+      "golden_value": "Amit Kumar Verma",
+      "winning_source": "CRM",
+      "strategy": "source_precedence+most_recent"
+    },
+    {
+      "attribute": "date_of_birth",
+      "golden_value": "1985-06-30",
+      "winning_source": "CRM",
+      "strategy": "source_precedence+non_null_any"
+    },
+    {
+      "attribute": "email",
+      "golden_value": "amit.verma@outlook.com",
+      "winning_source": "WEB",
+      "strategy": "most_recent+source_precedence"
+    },
+    {
+      "attribute": "phone",
+      "golden_value": "9900112233",
+      "winning_source": "WEB",
+      "strategy": "most_recent+source_precedence"
+    },
+    {
+      "attribute": "city",
+      "golden_value": "Noida",
+      "winning_source": "WEB",
+      "strategy": "most_recent+source_precedence"
+    },
+    {
+      "attribute": "state",
+      "golden_value": "UP",
+      "winning_source": "WEB",
+      "strategy": "most_recent+source_precedence"
+    },
+    {
+      "attribute": "country",
+      "golden_value": "IN",
+      "winning_source": "CRM",
+      "strategy": "source_precedence"
+    }
+  ]
+}

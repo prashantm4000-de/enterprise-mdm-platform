@@ -1,0 +1,8 @@
+{"event_ts": "2026-08-01T13:01:52.364548Z", "stage": "bronze_ingest", "source_id": "CRM", "batch_id": "20260801130141-7c62ef", "rows_ingested": 10}
+{"event_ts": "2026-08-01T13:01:54.452729Z", "stage": "bronze_ingest", "source_id": "WEB", "batch_id": "20260801130141-7c62ef", "rows_ingested": 10}
+{"event_ts": "2026-08-01T13:01:55.884652Z", "stage": "bronze_ingest", "source_id": "LEGACY", "batch_id": "20260801130141-7c62ef", "rows_ingested": 4}
+{"event_ts": "2026-08-01T13:02:03.058956Z", "stage": "silver_standardize", "source_id": "ALL", "batch_id": "20260801130141-7c62ef", "rows_standardized": 24}
+{"event_ts": "2026-08-01T13:02:09.926574Z", "stage": "dq_validation", "source_id": "ALL", "batch_id": "20260801130141-7c62ef", "rows_in": 24, "rows_valid": 19, "rows_quarantined": 5, "rule_failures": 5}
+{"event_ts": "2026-08-01T13:02:26.380492Z", "stage": "identity_resolution", "source_id": "ALL", "batch_id": "20260801130141-7c62ef", "candidate_pairs": 11, "auto_matches": 9, "review_queue": 1, "fp_rejected": 1, "entities": 12}
+{"event_ts": "2026-08-01T13:02:42.910223Z", "stage": "golden_record", "source_id": "ALL", "batch_id": "20260801130141-7c62ef", "golden_records": 12, "source_records_linked": 19}
+{"event_ts": "2026-08-01T13:02:45.920668Z", "stage": "reconciliation", "source_id": "ALL", "batch_id": "20260801130141-7c62ef", "exceptions": 0}

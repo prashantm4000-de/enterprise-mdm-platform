@@ -1,0 +1,52 @@
+# Declarative standardization: ordered list of named transforms per canonical attribute.
+# New transform types are registered once in standardization.py; rules here are pure config.
+rules:
+  full_name:
+    - transform: trim
+    - transform: collapse_whitespace
+    - transform: title_case
+    - transform: strip_titles          # removes Mr/Mrs/Dr etc.
+
+  email:
+    - transform: trim
+    - transform: lower_case
+    - transform: null_if_invalid_email
+
+  phone:
+    - transform: digits_only
+    - transform: normalize_phone       # strips country code 91/0 prefix, keeps 10-digit national number
+      params: { default_country: IN }
+
+  address_line:
+    - transform: trim
+    - transform: collapse_whitespace
+    - transform: title_case
+    - transform: expand_abbreviations
+      params:
+        map: { "St": "Street", "Rd": "Road", "Apt": "Apartment", "Blk": "Block", "Sec": "Sector" }
+
+  city:
+    - transform: trim
+    - transform: title_case
+    - transform: reference_lookup      # controlled vocabulary / reference data normalization
+      params:
+        map: { "Gurgaon": "Gurugram", "Bombay": "Mumbai", "Bangalore": "Bengaluru", "Calcutta": "Kolkata" }
+
+  state:
+    - transform: trim
+    - transform: upper_case
+    - transform: reference_lookup
+      params:
+        map: { "HARYANA": "HR", "DELHI": "DL", "MAHARASHTRA": "MH", "KARNATAKA": "KA", "UTTAR PRADESH": "UP", "WEST BENGAL": "WB" }
+
+  country:
+    - transform: trim
+    - transform: upper_case
+    - transform: reference_lookup
+      params:
+        map: { "INDIA": "IN", "IND": "IN", "BHARAT": "IN" }
+
+  date_of_birth:
+    - transform: parse_date            # tries multiple known formats, outputs ISO yyyy-MM-dd
+      params:
+        formats: ["yyyy-MM-dd", "dd/MM/yyyy", "dd-MM-yyyy", "MM/dd/yyyy", "yyyyMMdd", "dd-MMM-yyyy"]

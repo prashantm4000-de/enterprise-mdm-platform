@@ -1,0 +1,15 @@
+# Attribute-level survivorship. For each attribute, an ordered strategy list;
+# the first strategy that produces a non-null winner decides the golden value.
+# Strategies: source_precedence (uses trust_rank from sources.yaml),
+#             most_recent (source_updated_at), non_null_longest, non_null_any.
+default_strategy: [non_null_any]
+
+attributes:
+  full_name:      [source_precedence, most_recent]
+  email:          [most_recent, source_precedence]     # contact info decays -> recency wins
+  phone:          [most_recent, source_precedence]
+  address_line:   [most_recent, source_precedence]
+  city:           [most_recent, source_precedence]
+  state:          [most_recent, source_precedence]
+  country:        [source_precedence]
+  date_of_birth:  [source_precedence, non_null_any]    # DOB is stable -> trust the system of record

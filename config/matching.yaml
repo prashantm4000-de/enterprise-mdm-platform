@@ -1,0 +1,47 @@
+# Identity resolution config.
+# Strategy: blocking -> deterministic pass -> probabilistic (fuzzy) scoring -> threshold decision.
+blocking:
+  # Candidate pairs are only generated within a block. Keeps comparisons ~O(n) instead of O(n^2).
+  # Multiple independent keys: a pair is compared if it shares ANY block.
+  # Redundant keys protect recall — a changed phone or a nickname alone
+  # cannot hide a duplicate.
+  keys:
+    - expr: "concat('N|', substring(regexp_replace(lower(full_name), '[^a-z]', ''), 1, 3))"  # name prefix
+    - expr: "concat('P|', substring(phone, -4, 4))"                                          # phone last-4
+    - expr: "concat('E|', substring(email, 1, 4))"                                           # email prefix
+
+deterministic:
+  # An exact hit on any of these makes the pair an auto-match (score 1.0).
+  keys:
+    - [email]
+    - [phone, date_of_birth]
+
+probabilistic:
+  # Weighted fuzzy score across attributes. Weights sum to 1.
+  features:
+    - attribute: full_name
+      method: token_sort_ratio     # rapidfuzz
+      weight: 0.40
+    - attribute: address_line
+      method: token_set_ratio
+      weight: 0.25
+    - attribute: email
+      method: exact
+      weight: 0.15
+    - attribute: phone
+      method: exact
+      weight: 0.10
+    - attribute: date_of_birth
+      method: exact
+      weight: 0.10
+
+thresholds:
+  auto_match: 0.85       # >= this: merge automatically
+  review: 0.65           # between review and auto_match: route to steward review queue
+  # < review: not a match
+
+false_positive_mitigation:
+  # Hard disqualifiers even if the score clears the threshold.
+  reject_if:
+    - "date_of_birth is present on both sides and differs"
+    - "country differs"

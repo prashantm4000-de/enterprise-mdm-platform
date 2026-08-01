@@ -1,0 +1,58 @@
+# Data quality rule engine. Each rule = rule_type + params + severity.
+# rule_type maps to a registered check in data_quality.py.
+# severity: ERROR quarantines the record; WARN annotates it but lets it pass.
+# Adding a rule = adding YAML. No code changes.
+rules:
+  - rule_id: DQ001
+    description: Full name is mandatory
+    rule_type: not_null
+    column: full_name
+    severity: ERROR
+
+  - rule_id: DQ002
+    description: At least one contact identifier (email or phone) must exist
+    rule_type: expression
+    expression: "email IS NOT NULL OR phone IS NOT NULL"
+    severity: ERROR
+
+  - rule_id: DQ003
+    description: Email must be well-formed
+    rule_type: regex
+    column: email
+    pattern: "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+    allow_null: true
+    severity: ERROR
+
+  - rule_id: DQ004
+    description: Phone must be a 10-digit national number
+    rule_type: regex
+    column: phone
+    pattern: "^[6-9][0-9]{9}$"
+    allow_null: true
+    severity: WARN
+
+  - rule_id: DQ005
+    description: Country must be in the ISO reference list (domain validation)
+    rule_type: domain
+    column: country
+    allowed_values: ["IN", "US", "GB", "AE", "SG"]
+    allow_null: true
+    severity: WARN
+
+  - rule_id: DQ006
+    description: Date of birth must be a valid past date (business rule)
+    rule_type: expression
+    expression: "date_of_birth IS NULL OR (date_of_birth > '1900-01-01' AND date_of_birth < current_date())"
+    severity: ERROR
+
+  - rule_id: DQ007
+    description: source_record_id must be unique within a source batch (duplicate key)
+    rule_type: unique
+    columns: [source_id, source_record_id]
+    severity: ERROR
+
+  - rule_id: DQ008
+    description: Record freshness — source timestamp within last 3 years (timeliness)
+    rule_type: expression
+    expression: "source_updated_at IS NULL OR source_updated_at >= add_months(current_date(), -36)"
+    severity: WARN

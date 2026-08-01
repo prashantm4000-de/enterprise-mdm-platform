@@ -1,0 +1,40 @@
+{
+  "batch_id": "20260801130141-7c62ef",
+  "stage_counts_by_source": {
+    "bronze_ingested": {
+      "WEB": 10,
+      "CRM": 10,
+      "LEGACY": 4
+    },
+    "standardized": {
+      "WEB": 10,
+      "CRM": 10,
+      "LEGACY": 4
+    },
+    "dq_valid": {
+      "WEB": 8,
+      "CRM": 7,
+      "LEGACY": 4
+    },
+    "dq_quarantined": {
+      "WEB": 2,
+      "CRM": 3
+    },
+    "linked_to_golden": {
+      "WEB": 8,
+      "CRM": 7,
+      "LEGACY": 4
+    }
+  },
+  "totals": {
+    "bronze": 24,
+    "standardized": 24,
+    "valid": 19,
+    "quarantined": 5,
+    "golden_records": 12,
+    "dedup_consolidation": 7
+  },
+  "exceptions": [
+    "none \u2014 all stage transitions fully reconciled"
+  ]
+}
